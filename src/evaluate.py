@@ -14,10 +14,10 @@ import os
 
 # Cargar la tabla transformada
 def eval_model(filename):
-    df = pd.read_csv(os.path.join("../data/processed", filename)).set_index("ID")
+    df = pd.read_csv(os.path.join("./data/processed", filename)).set_index("ID")
     print(filename, " cargado correctamente")
     # Leemos el modelo entrenado para usarlo
-    package = "../models/best_model.pkl"
+    package = "./models/best_model.pkl"
     model = pickle.load(open(package, "rb"))
     print("Modelo importado correctamente")
     # Predecimos sobre el set de datos de validación
