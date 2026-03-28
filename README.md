@@ -34,7 +34,7 @@ Project Organization
     │   │
     │   └── predict.py     <- Script to use trained models to make predictions
     │
-    └── LICENSE            <- License
+    └── Dockerfile         <- Docker config to enable container execution
 
 
 --------
