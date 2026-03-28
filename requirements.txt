@@ -1,0 +1,6 @@
+# requirements
+pandas==2.3.0
+xgboost==1.6.1
+pytest==8.2.0
+flake8==7.0.0
+black==24.1.0
