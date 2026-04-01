@@ -2,5 +2,3 @@ FROM jupyter/scipy-notebook:latest
 COPY . /app
 WORKDIR /app
 RUN pip install -r requirements.txt
-    && python src/make_dataset.py
-    && python src/train.py
