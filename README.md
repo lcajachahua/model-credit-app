@@ -23,6 +23,8 @@ Project Organization
     │                         generated with `pip freeze > requirements.txt`
     │
     ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
+    ├── main.py            <- deploy model with FastAPI
+    ├── invoke.py          <- Test API with new data
     ├── src                <- Source code for use in this project.
     │   ├── __init__.py    <- Makes src a Python module
     │   │
