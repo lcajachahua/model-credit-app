@@ -9,34 +9,34 @@ Project Organization
 ------------
 
     ├── LICENSE
-    ├── README.md          <- The top-level README for developers using this project.
+    ├── README.md           <- The top-level README for developers using this project.
+    ├── .github/workflows
+    │   ├── python-package-conda.yml <- CI/CD with github Actions, Flake8 and pytest.
     ├── data
-    │   ├── scores         <- Results from scoring model.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
+    │   ├── scores          <- Results from scoring model.
+    │   ├── processed       <- The final, canonical data sets for modeling.
+    │   └── raw             <- The original, immutable data dump.
     │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
+    ├── models              <- Trained and serialized models, model predictions, or model summaries
     │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering)
+    ├── notebooks           <- Jupyter notebooks. Naming convention is a number (for ordering)
     │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
+    ├── requirements.txt    <- The requirements file for reproducing the analysis environment, e.g.
     │                         generated with `pip freeze > requirements.txt`
     │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-    ├── main.py            <- deploy model with FastAPI
-    ├── invoke.py          <- Test API with new data
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── make_dataset.py<- Script to prepare data
-    │   │
-    │   ├── train.py       <- Script to train models
-    │   │                    
-    │   ├── evaluate.py    <- Script to evaluate models using kpi's
-    │   │
-    │   └── predict.py     <- Script to use trained models to make predictions
+    ├── setup.py            <- makes project pip installable (pip install -e .) so src can be imported
+    ├── main.py             <- deploy model with FastAPI
+    ├── test                <- Source code for use in this project.
+    │   ├── unit_test.py    <- Unit tests with pytest
+    |   ├── invoke.py       <- Test API with new data
+    ├── src                 <- Source code for use in this project.
+    │   ├── __init__.py     <- Makes src a Python module
+    │   ├── make_dataset.py <- Script to prepare data
+    │   ├── train.py        <- Script to train models
+    │   ├── evaluate.py     <- Script to evaluate models using kpi's
+    │   └── predict.py      <- Script to use trained models to make predictions
     │
-    └── Dockerfile         <- Docker config to enable container execution
+    └── Dockerfile          <- Docker config to enable container execution
 
 
 --------
