@@ -5,18 +5,33 @@ import pandas as pd
 import numpy as np
 import uvicorn
 import os
-from mangum import Mangum
 from src.make_dataset import data_preparation
-
 
 # call the app
 app = FastAPI(title="API")
-#handler=Mangum(app)
-
 
 # Load the model and scaler
-with open("models/best_model.pkl", "rb") as f1:
-    model = pickle.load(f1)
+def load_model():
+    with open("models/best_model.pkl", "rb") as f1:
+        return pickle.load(f1)
+
+model = load_model()
+
+def predict_def(df, endpoint="simple"):
+    # Prediction
+    prediction = model.predict_proba(df)
+    highest_proba = prediction.max(axis=1)
+    predicted_labels = ["No es Default" if i == 0 else f"Es Default" for i in highest_proba]
+    print(f"Predicted labels: {predicted_labels}")
+    print(highest_proba)
+    response = []
+    for label, proba in zip(predicted_labels, highest_proba):
+        output = {
+            "prediction": label,
+            "probability of prediction": str(round(proba * 100)) + '%'
+        }
+        response.append(output)
+    return response
 
 
 class Customer(BaseModel):
@@ -58,19 +73,14 @@ def root():
 
 
 # Prediction endpoint
-@app.post("/predict")
+@app.post("/predict", response_model=Output)
 def predict_default(subject: Customer):
     # Make prediction
-    
-    data = np.array([[subject.LIMIT_BAL, subject.SEX, subject.MARRIAGE, subject.AGE,
-                      subject.PAY_1, subject.PAY_2, subject.PAY_3, subject.PAY_4, subject.PAY_5, subject.PAY_6, 
-                      subject.BILL_AMT1, subject.BILL_AMT2, subject.BILL_AMT3, subject.BILL_AMT4, subject.BILL_AMT5, subject.BILL_AMT6, 
-                      subject.PAY_AMT1, subject.PAY_AMT2, subject.PAY_AMT3, subject.PAY_AMT4, subject.PAY_AMT5, subject.PAY_AMT6]])    
+    data = pd.DataFrame(subject.dict(), index=[0])
     datan = data_preparation(data)
-    prediction = model.predict(datan)
-    result = "No es Default" if prediction[0] == 1 else "Es Default"
-    return JSONResponse({"Predicción": result})
-    
+    parsed = predict_def(df=datan)
+    return {"Output": parsed}
+
 
 # App Health
 @app.get('/health')
