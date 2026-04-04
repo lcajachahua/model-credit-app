@@ -1,43 +1,44 @@
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import pickle
 import pandas as pd
 import numpy as np
 import uvicorn
 import os
+from mangum import Mangum
 from src.make_dataset import data_preparation
+
+
+model_features = [
+    "SEX",
+    "PAY_1",
+    "AGE",
+    "LIMIT_BAL",
+    "CV_LPAY_TOT",
+    "CV_LBILL_TOT",
+    "CANT_PAY_MAY0",
+    "BILL_AMT1",
+    "LOG_BILL_AMT1",
+    "AVG_LPAY_TOT",
+    "STD_PAY_TOT",
+    "AVG_EXP_1",
+]
+
 
 # call the app
 app = FastAPI(title="API")
+handler=Mangum(app)
+
 
 # Load the model and scaler
-def load_model():
-    with open("models/best_model.pkl", "rb") as f1:
-        return pickle.load(f1)
-
-model = load_model()
-
-def predict_def(df, endpoint="simple"):
-    # Prediction
-    prediction = model.predict_proba(df)
-    highest_proba = prediction.max(axis=1)
-    predicted_labels = ["No es Default" if i == 0 else f"Es Default" for i in highest_proba]
-    print(f"Predicted labels: {predicted_labels}")
-    print(highest_proba)
-    response = []
-    for label, proba in zip(predicted_labels, highest_proba):
-        output = {
-            "prediction": label,
-            "probability of prediction": str(round(proba * 100)) + '%'
-        }
-        response.append(output)
-    return response
+with open("models/best_model.pkl", "rb") as f1:
+    model = pickle.load(f1)
 
 
 class Customer(BaseModel):
     LIMIT_BAL: int
     SEX: int
-    MARRIAGE: int
     AGE: int
     PAY_1: int
     PAY_2: int
@@ -73,14 +74,16 @@ def root():
 
 
 # Prediction endpoint
-@app.post("/predict", response_model=Output)
+@app.post("/predict")
 def predict_default(subject: Customer):
     # Make prediction
+    
     data = pd.DataFrame(subject.dict(), index=[0])
     datan = data_preparation(data)
-    parsed = predict_def(df=datan)
-    return {"Output": parsed}
-
+    prediction = model.predict(datan[model_features])
+    result = "No es Default" if prediction[0] == 1 else "Es Default"
+    return JSONResponse({"Predicción": result})
+    
 
 # App Health
 @app.get('/health')
